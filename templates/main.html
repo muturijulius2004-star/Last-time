@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>NovaTech Solutions</title>
+
+{% include "main_style.html" %}
+
+</head>
+
+<body>
+
+<header>
+    <h1>NovaTech Solutions</h1>
+    <p>Innovation • Quality • Customer Satisfaction</p>
+</header>
+
+<div class="account-bar">
+
+    <span>Logged in as: <strong>{{ username }}</strong></span>
+
+    <form method="POST" action="/logout">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button type="submit" class="logout">LOG OUT</button>
+    </form>
+
+</div>
+
+<div class="container">
+
+<!-- PAGE 1 -->
+<section class="page active">
+
+    <div class="hero">
+        <h2>Welcome to NovaTech Solutions</h2>
+        <p>Your trusted business partner.</p>
+    </div>
+
+    <h2>Welcome</h2>
+
+    <p>
+        We are committed to providing quality services,
+        innovative solutions and excellent customer support.
+    </p>
+
+    <div class="feature">
+        <strong>Our Commitment</strong>
+        <p>Delivering reliable and professional business services.</p>
+    </div>
+
+    <div class="navigation">
+        <button class="next" onclick="nextPage()">NEXT →</button>
+    </div>
+
+</section>
+
+<!-- PAGE 2 -->
+<section class="page">
+
+    <h2>About Us</h2>
+
+    <p>
+        NovaTech Solutions is a business focused on providing
+        dependable services and creating value for customers.
+    </p>
+
+    <div class="feature">
+        <strong>Our Mission</strong>
+        <p>To provide excellent services and customer experiences.</p>
+    </div>
+
+    <div class="feature">
+        <strong>Our Vision</strong>
+        <p>To become a trusted and respected business.</p>
+    </div>
+
+    <div class="feature">
+        <strong>Our Values</strong>
+        <p>Integrity, professionalism, innovation and quality.</p>
+    </div>
+
+    <div class="navigation">
+        <button class="back" onclick="prevPage()">← BACK</button>
+        <button class="next" onclick="nextPage()">NEXT →</button>
+    </div>
+
+</section>
+
+<!-- PAGE 3 -->
+<section class="page">
+
+    <h2>Our Services</h2>
+
+    <p>Discover the services we offer to our customers.</p>
+
+    <div class="feature">
+        <strong>Business Consulting</strong>
+        <p>Professional guidance and business support.</p>
+    </div>
+
+    <div class="feature">
+        <strong>Digital Solutions</strong>
+        <p>Modern digital tools and technology services.</p>
+    </div>
+
+    <div class="feature">
+        <strong>Customer Support</strong>
+        <p>Dedicated assistance and customer care.</p>
+    </div>
+
+    <div class="navigation">
+        <button class="back" onclick="prevPage()">← BACK</button>
+        <button class="next" onclick="nextPage()">NEXT →</button>
+    </div>
+
+</section>
+
+<!-- PAGE 4 -->
+<section class="page">
+
+    <h2>Contact Us</h2>
+
+    <p>Have a question? Our team is ready to hear from you.</p>
+
+    <div class="feature">
+        <strong>Phone</strong>
+        <p>+254 700 000 000</p>
+    </div>
+
+    <div class="feature">
+        <strong>Email</strong>
+        <p>info@novatech.example</p>
+    </div>
+
+    <div class="feature">
+        <strong>Location</strong>
+        <p>Kenya</p>
+    </div>
+
+    <div class="navigation">
+        <button class="back" onclick="prevPage()">← BACK</button>
+        <button class="next" onclick="nextPage()">NEXT →</button>
+    </div>
+
+</section>
+
+<!-- PAGE 5 -->
+<section class="page">
+
+    <h2>Get Started</h2>
+
+    <p>
+        Thank you for your interest in NovaTech Solutions.
+        We welcome you to explore our services and connect with us.
+    </p>
+
+    <div class="feature">
+        <strong>Start Your Journey</strong>
+        <p>
+            Continue to our customer feedback page
+            and tell us about your experience.
+        </p>
+    </div>
+
+    <div class="navigation">
+        <button class="back" onclick="prevPage()">← BACK</button>
+        <button class="next" onclick="nextPage()">NEXT →</button>
+    </div>
+
+</section>
+
+<!-- PAGE 6 -->
+<section class="page">
+
+    <h2>Customer Feedback</h2>
+
+    <p>
+        We value your opinion. Help us improve the quality
+        of our services by completing the form below.
+    </p>
+
+    <form id="feedbackForm">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+        <label for="customerName">1. Your Name</label>
+        <input
+            type="text"
+            id="customerName"
+            name="name"
+            placeholder="Enter your full name"
+            maxlength="100"
+            required
+        >
+
+        <label for="customerPhone">2. Phone Number</label>
+        <input
+            type="tel"
+            id="customerPhone"
+            name="phone"
+            placeholder="Enter your phone number"
+            maxlength="30"
+            required
+        >
+
+        <label for="customerFeedback">
+            3. How can we improve our services?
+        </label>
+        <textarea
+            id="customerFeedback"
+            name="message"
+            placeholder="Tell us how we can serve you better..."
+            maxlength="2000"
+            required
+        ></textarea>
+
+        <div class="form-error" id="formError"></div>
+
+        <button type="submit" class="submit" id="submitBtn">
+            SUBMIT FEEDBACK
+        </button>
+
+    </form>
+
+    <div class="success" id="successMessage">
+        <h3>Thank You!</h3>
+        <p>Your feedback has been completed successfully.</p>
+    </div>
+
+    <div class="navigation">
+        <button class="back" onclick="prevPage()">← BACK</button>
+    </div>
+
+</section>
+
+<div class="progress" id="progress">Page 1 of 6</div>
+
+</div>
+
+<footer>© 2026 NovaTech Solutions. All rights reserved.</footer>
+
+<script>
+
+let currentPage = 0;
+const pages = document.querySelectorAll(".page");
+
+function showPage(index) {
+    pages.forEach((page, i) => {
+        page.classList.toggle("active", i === index);
+    });
+
+    currentPage = index;
+
+    document.getElementById("progress").textContent =
+        "Page " + (currentPage + 1) + " of 6";
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function nextPage() {
+    if (currentPage < pages.length - 1) showPage(currentPage + 1);
+}
+
+function prevPage() {
+    if (currentPage > 0) showPage(currentPage - 1);
+}
+
+document.getElementById("feedbackForm")
+.addEventListener("submit", async function(event) {
+
+    event.preventDefault();
+
+    if (!this.reportValidity()) return;
+
+    const button = document.getElementById("submitBtn");
+    const errorBox = document.getElementById("formError");
+
+    button.disabled = true;
+    errorBox.style.display = "none";
+
+    try {
+        const response = await fetch("/feedback", {
+            method: "POST",
+            body: new FormData(this)
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Something went wrong.");
+        }
+
+        document.getElementById("successMessage").style.display = "block";
+        this.style.display = "none";
+
+    } catch (err) {
+        errorBox.textContent = err.message;
+        errorBox.style.display = "block";
+        button.disabled = false;
+    }
+
+});
+
+</script>
+
+</body>
+  </html>
