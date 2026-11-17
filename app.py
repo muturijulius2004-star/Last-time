@@ -248,6 +248,39 @@ def logout():
     return redirect(url_for("login"))
 
 
+@app.route("/submissions")
+def submissions():
+    if not session.get("user_id"):
+        return redirect(url_for("login"))
+
+    rows = run_query(
+        """
+        SELECT f.id, u.username, f.name, f.phone, f.message, f.created_at
+        FROM feedback f
+        JOIN users u ON u.id = f.user_id
+        ORDER BY f.created_at DESC
+        """
+    )
+
+    items = []
+    for row in rows:
+        items.append({
+            "id": row[0],
+            "user": row[1],
+            "name": row[2],
+            "phone": row[3],
+            "message": row[4],
+            "created_at": row[5],
+        })
+
+    return render_template(
+        "submissions.html",
+        username=session.get("username"),
+        csrf_token=get_csrf_token(),
+        submissions=items,
+    )
+
+
 @app.route("/feedback", methods=["POST"])
 def feedback():
     if not session.get("user_id"):
