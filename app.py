@@ -9,7 +9,7 @@ import psycopg2
 from psycopg2 import errors as pg_errors
 from flask import (
     Flask, request, redirect, url_for,
-    session, render_template, abort, jsonify
+    session, render_template, abort, jsonify, flash, get_flashed_messages
 )
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -133,6 +133,11 @@ def login_user(user_id, username):
     session["username"] = username
 
 
+def consume_auth_messages():
+    """Return one-time success messages for the shared login/signup page."""
+    return get_flashed_messages(with_categories=True)
+
+
 @app.route("/")
 def home():
     if not session.get("user_id"):
@@ -171,14 +176,15 @@ def signup():
             error = "Passwords do not match."
         else:
             try:
-                row = run_query(
+                run_query(
                     "INSERT INTO users (username, password_hash) "
-                    "VALUES (%s, %s) RETURNING id",
-                    (username, generate_password_hash(password)),
-                    one=True
+                    "VALUES (%s, %s)",
+                    (username, generate_password_hash(password))
                 )
-                login_user(row[0], username)
-                return redirect(url_for("home"))
+                # Do not sign the new user in here. They must authenticate
+                # through the login form after successful registration.
+                flash("Registration successful! Please log in with your new account.", "success")
+                return redirect(url_for("login"))
             except pg_errors.UniqueViolation:
                 error = "That username is already taken. Try another."
 
@@ -187,7 +193,8 @@ def signup():
         mode="signup",
         error=error,
         username=username,
-        csrf_token=get_csrf_token()
+        csrf_token=get_csrf_token(),
+        messages=consume_auth_messages()
     )
 
 
@@ -229,7 +236,8 @@ def login():
         mode="login",
         error=error,
         username=username,
-        csrf_token=get_csrf_token()
+        csrf_token=get_csrf_token(),
+        messages=consume_auth_messages()
     )
 
 
