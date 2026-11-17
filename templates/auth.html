@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NovaTech Solutions | {{ 'Sign Up' if mode == 'signup' else 'Login' }}</title>
+
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: linear-gradient(135deg, #092747, #1769bb);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.card {
+    background: white;
+    width: 100%;
+    max-width: 420px;
+    padding: 35px 28px;
+    border-radius: 16px;
+    box-shadow: 0 15px 45px rgba(0,0,0,.2);
+}
+
+.logo { text-align: center; margin-bottom: 25px; }
+.logo h1 { color: #123d70; font-size: 27px; }
+.logo p { color: #718096; font-size: 13px; margin-top: 9px; }
+
+h2 { text-align: center; color: #253247; margin-bottom: 10px; }
+
+.subtitle {
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+label {
+    display: block;
+    color: #253d5b;
+    font-weight: bold;
+    margin: 17px 0 8px;
+}
+
+input {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid #cbd4df;
+    border-radius: 7px;
+    font-size: 15px;
+}
+
+input:focus { outline: none; border-color: #1769bb; }
+
+.hint { color: #718096; font-size: 12px; margin-top: 6px; }
+
+.password-wrap { position: relative; }
+.password-wrap input { padding-right: 75px; }
+
+.show-password {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    border: none;
+    background: transparent;
+    color: #1769bb;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.main-button {
+    width: 100%;
+    padding: 15px;
+    background: #1769bb;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 25px;
+    cursor: pointer;
+}
+
+.main-button:hover { background: #123d70; }
+
+.error {
+    background: #fff0f0;
+    color: #b42318;
+    padding: 13px;
+    border-radius: 7px;
+    text-align: center;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+.switch {
+    text-align: center;
+    font-size: 14px;
+    color: #536174;
+    margin-top: 22px;
+}
+
+.switch a { color: #1769bb; font-weight: bold; text-decoration: none; }
+
+footer {
+    text-align: center;
+    color: #9aa6b5;
+    font-size: 12px;
+    margin-top: 25px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="logo">
+        <h1>NovaTech Solutions</h1>
+        <p>Innovation • Quality • Customer Satisfaction</p>
+    </div>
+
+    {% if mode == 'signup' %}
+        <h2>Create Account</h2>
+        <p class="subtitle">Sign up to get started.</p>
+    {% else %}
+        <h2>Welcome Back</h2>
+        <p class="subtitle">Please log in to continue.</p>
+    {% endif %}
+
+    <form method="POST" action="{{ '/signup' if mode == 'signup' else '/login' }}">
+
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+        <label for="username">Username</label>
+        <input
+            type="text"
+            id="username"
+            name="username"
+            placeholder="{{ 'Choose a username' if mode == 'signup' else 'Enter your username' }}"
+            autocomplete="username"
+            maxlength="30"
+            value="{{ username or '' }}"
+            required
+        >
+        {% if mode == 'signup' %}
+        <p class="hint">3-30 characters: letters, numbers and underscore only.</p>
+        {% endif %}
+
+        <label for="password">Password</label>
+        <div class="password-wrap">
+            <input
+                type="password"
+                id="password"
+                name="password"
+                placeholder="{{ 'Create a password' if mode == 'signup' else 'Enter your password' }}"
+                autocomplete="{{ 'new-password' if mode == 'signup' else 'current-password' }}"
+                maxlength="128"
+                required
+            >
+            <button type="button" class="show-password"
+                    onclick="togglePassword('password', this)">SHOW</button>
+        </div>
+        {% if mode == 'signup' %}
+        <p class="hint">At least 8 characters.</p>
+
+        <label for="confirm">Confirm Password</label>
+        <div class="password-wrap">
+            <input
+                type="password"
+                id="confirm"
+                name="confirm"
+                placeholder="Repeat your password"
+                autocomplete="new-password"
+                maxlength="128"
+                required
+            >
+            <button type="button" class="show-password"
+                    onclick="togglePassword('confirm', this)">SHOW</button>
+        </div>
+        {% endif %}
+
+        {% if error %}
+        <div class="error">{{ error }}</div>
+        {% endif %}
+
+        <button type="submit" class="main-button">
+            {{ 'SIGN UP' if mode == 'signup' else 'LOGIN' }}
+        </button>
+
+    </form>
+
+    <p class="switch">
+        {% if mode == 'signup' %}
+            Already have an account? <a href="/login">Log in</a>
+        {% else %}
+            New here? <a href="/signup">Create an account</a>
+        {% endif %}
+    </p>
+
+    <footer>© 2026 NovaTech Solutions</footer>
+
+</div>
+
+<script>
+function togglePassword(id, button) {
+    const field = document.getElementById(id);
+
+    if (field.type === "password") {
+        field.type = "text";
+        button.textContent = "HIDE";
+    } else {
+        field.type = "password";
+        button.textContent = "SHOW";
+    }
+}
+</script>
+
+</body>
+  </html>
